@@ -82,16 +82,13 @@ private
 end
 
 def save(game)
-		saving = File.open('lib/saved_hangman.yaml', 'w')
-		saving.write(YAML::dump(game))
-	end
-	def load
-		saved_game = File.open('lib/saved_hangman.yaml', 'r') { |file| file.read }
-		YAML.load saved_game
-	end
-	def delete
-
-	end
+	saving = File.open('lib/saved_hangman.yaml', 'w')
+	saving.write(YAML::dump(game))
+end
+def load
+	saved_game = File.open('lib/saved_hangman.yaml', 'r') { |file| file.read }
+	YAML.load saved_game
+end
 
 ################################
 ####     HANGMAN DISPLAY     ###
