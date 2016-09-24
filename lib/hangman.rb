@@ -4,14 +4,14 @@ class Hangman
 	attr_reader :display, :wrong_guesses, :winner
 
 	def initialize
-		@wrong_guesses = 0
-		random_word
-		word_keeper
-		@display = dashes
-		@winner = false
+		@wrong_guesses = 0 #Counts the wrong guesses
+		random_word #calls method to get a random word
+		word_keeper #calls method to obtain and keep that random word privately
+		@display = dashes #sets up the dashes according to the length of the word
+		@winner = false 
 	end
 
-	def draw_stickfigure
+	def draw_stickfigure #draws a nice stickfigure that progresses as the player guesses wrong
 		puts " ____"
 		puts "|   |"
 		print "|   "
@@ -26,34 +26,34 @@ class Hangman
 		puts "\n|"
 		puts "TTTTTTTT"
 		puts ""
-		puts "#{@display}"
+		puts "#{@display}" #displays the progress if player guesses right
 
 	end
-	def guess(letter)
-		let = letter.downcase
-		@wrong_guesses += 1 unless word_keeper.include? let
-		replace(let)
-		draw_stickfigure
+	def guess(letter) #public method to recieve guesses from the player
+		let = letter.downcase #case insensitive
+		@wrong_guesses += 1 unless word_keeper.include? let #adds 1 to the wrong guess if there is no match
+		replace(let) if word_keeper.include? let #calls the replace method if letter is included in the word
+		draw_stickfigure 
 	end
 
-	def show_word
+	def show_word #if the player looses
 		word = word_keeper
 		puts "The word was #{word.join}"
 	end
 
 private
 
-	def random_word
+	def random_word 
 		words = File.readlines "5desk.txt"
 		begin
 			random_number = rand(words.size)
-			@magic_word = words[random_number].downcase.strip
+			@magic_word = words[random_number].downcase.strip 
 		end until @magic_word.length >= 5 && @magic_word.length <= 12
 		return @magic_word
 	end
 
-	def replace(letter)
-		@winner = true if letter == @the_word.join
+	def replace(letter) #replaces the dashes with the correct letter
+		@winner = true if letter == @the_word.join #if they type the whole word correctly, player wins
 		@the_word.each_with_index { |char, index|
 				if char == letter
 					@display[index] = char
@@ -93,6 +93,10 @@ def save(game)
 
 	end
 
+################################
+####     HANGMAN DISPLAY     ###
+################################
+
 puts "Let's play Hangman..."
 
 if File.exists? "lib/saved_hangman.yaml"
@@ -112,9 +116,12 @@ letter = gets.strip
 	end 
 game.guess(letter)
 end until game.wrong_guesses == 6 || game.winner == true
-puts "#{game.show_word}"
-File.delete("lib/saved_hangman.yaml") if continue == 'y'
-puts "You lost" if game.wrong_guesses == 6
+
+File.delete("lib/saved_hangman.yaml") if continue == 'y' #delets file if a loaded game ends.
+if game.wrong_guesses == 6
+	puts "You lost" 
+	puts "#{game.show_word}"
+end
 puts "You won!" if game.winner == true
 
 
